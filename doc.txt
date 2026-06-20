@@ -1,0 +1,3 @@
+compression: https://github.com/chopratejas/headroom
+
+implement caching - geniecodebottle instagram

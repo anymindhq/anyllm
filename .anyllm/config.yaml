@@ -1,0 +1,8 @@
+distiller:
+  model: claude-sonnet-4-6
+  budget_tokens: 2000
+targets:
+  default: chatgpt
+framing:
+  extra_rules: []
+  tone: direct

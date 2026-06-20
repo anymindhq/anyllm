@@ -1,0 +1,8 @@
+{
+  "exists": true,
+  "confidence": "EXTRACTED",
+  "node_type": "function",
+  "name": "validate_jwt",
+  "file": "src/auth.py",
+  "line": 42
+}

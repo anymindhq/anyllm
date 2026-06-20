@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>anyllm - Git for LLM Context</title>
+  <meta name="description" content="Snapshot a dying LLM session, brief the next LLM, and keep moving across tools without re-explaining the work.">
+  <meta name="keywords" content="anyllm, LLM context, AI session handoff, developer tools, CLI, Claude, ChatGPT, Cursor">
+  <meta name="author" content="anyllm">
+  <link rel="icon" href="logo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="brand" aria-label="anyllm home">
+        <img src="logo.png" alt="" class="brand-mark">
+        <span>anyllm</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#comparison">Compare</a></li>
+        <li><a href="#format">Format</a></li>
+      </ul>
+      <a href="https://github.com/anymindhq/anyllm" class="nav-cta" target="_blank" rel="noreferrer">Star on GitHub</a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <div class="hero-kicker">Open source / Python CLI / local-first</div>
+          <h1>Git for LLM context.</h1>
+          <p class="hero-subtitle">
+            Your LLM session dies. Run <strong>anyllm pack</strong>, prime the next tool, paste once, and continue without re-explaining the project.
+          </p>
+          <div class="hero-actions">
+            <a href="#how-it-works" class="btn-primary">See the flow</a>
+            <a href="https://github.com" class="btn-secondary" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+
+        <div class="hero-panel" aria-label="anyllm command preview">
+          <div class="logo-plate">
+            <img src="logo.png" alt="anyllm logo">
+          </div>
+          <div class="terminal">
+            <div class="terminal-header">
+              <span>~/my-project</span>
+              <span>anyllm</span>
+            </div>
+            <div class="terminal-body">
+              <p><span>$</span> anyllm pack</p>
+              <p class="muted">ingested session c12eefd0 - 58 turns</p>
+              <p class="muted">distilled to .anyllm/current.md - high confidence</p>
+              <p><span>$</span> anyllm prime --target chatgpt --copy</p>
+              <p class="muted">briefing copied - 1,847 tokens</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section problem-section" id="problem">
+      <div class="container">
+        <div class="section-intro">
+          <p class="section-label">The Problem</p>
+          <h2>The 10-minute tax you pay every time.</h2>
+          <p>You're deep in a coding session with an LLM. Then one of these happens, and the next tool needs the whole project explained again.</p>
+        </div>
+        <div class="card-grid four">
+          <article class="card">
+            <span class="card-index">01</span>
+            <h3>Credits Exhausted</h3>
+            <p>API quota or subscription caps hit. You switch providers, but the built-up context is gone.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">02</span>
+            <h3>Context Window Full</h3>
+            <p>The model starts forgetting earlier decisions. A fresh session does not know what happened.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">03</span>
+            <h3>Provider Outage</h3>
+            <p>The service goes down. Re-briefing a fallback model from scratch breaks your momentum.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">04</span>
+            <h3>Second Opinion</h3>
+            <p>You want another model to review the work, but first it needs the exact task state.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <div class="section-intro">
+          <p class="section-label">How It Works</p>
+          <h2>Three commands. Thirty seconds.</h2>
+          <p>Pack your current session, prime the target model, then paste a compact briefing with decisions, failed paths, and next steps.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span>1</span>
+            <h3>Pack</h3>
+            <code>anyllm pack</code>
+            <p>Reads your last LLM session and distills it into a focused snapshot with confidence ratings.</p>
+          </article>
+          <article class="step">
+            <span>2</span>
+            <h3>Prime</h3>
+            <code>anyllm prime --target chatgpt</code>
+            <p>Wraps the snapshot in target-specific framing, anti-repetition guards, and verification notes.</p>
+          </article>
+          <article class="step">
+            <span>3</span>
+            <h3>Paste</h3>
+            <code>--copy</code>
+            <p>The next LLM knows what is done, what failed, what matters, and what to do next.</p>
+          </article>
+        </div>
+        <div class="pipeline">
+          <span>Ingestor</span>
+          <span>Distiller</span>
+          <span>Storage</span>
+          <span>Composer</span>
+          <span>Adapter</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-intro">
+          <p class="section-label">Features</p>
+          <h2>Built for mid-task handoff.</h2>
+          <p>Every feature exists to make a new model resume work accurately, without pretending long-term memory is magic.</p>
+        </div>
+        <div class="card-grid three">
+          <article class="card">
+            <span class="card-index">A</span>
+            <h3>Cross-Provider Portability</h3>
+            <p>Move context between Claude, ChatGPT, Cursor, and future LLM tools without ecosystem lock-in.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">B</span>
+            <h3>Confidence-Aware Briefings</h3>
+            <p>Each section is rated high, medium, or low so the receiving model knows what to verify.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">C</span>
+            <h3>Local-First and Private</h3>
+            <p>No cloud, no database, no telemetry. Transcripts and snapshots stay on disk as plain files.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">D</span>
+            <h3>Hand-Editable Snapshots</h3>
+            <p>Snapshots are markdown. Open them, correct them, commit them, or share them like any other project file.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">E</span>
+            <h3>Anti-Repetition Guards</h3>
+            <p>The briefing explicitly says what not to restart, re-implement, or retry.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">F</span>
+            <h3>Extensible Pipeline</h3>
+            <p>Add new sources or targets with a small adapter while keeping the core snapshot format stable.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section comparison-section" id="comparison">
+      <div class="container">
+        <div class="section-intro centered">
+          <p class="section-label">Comparison</p>
+          <h2>Not a memory SDK. A handoff tool.</h2>
+          <p>The market is full of memory systems for app builders. anyllm is for developers moving an active task across models.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Audience</th>
+                <th>Cross-provider</th>
+                <th>Open source</th>
+                <th>Confidence-aware</th>
+                <th>Lightweight</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>mem0</td><td>App developers</td><td>N/A</td><td>Yes</td><td>No</td><td>Medium</td></tr>
+              <tr><td>Letta / MemGPT</td><td>App developers</td><td>N/A</td><td>Yes</td><td>No</td><td>Heavy</td></tr>
+              <tr><td>Zep</td><td>App developers</td><td>N/A</td><td>Partial</td><td>No</td><td>Heavy</td></tr>
+              <tr><td>Pieces</td><td>End-user devs</td><td>Some</td><td>No</td><td>No</td><td>Heavy</td></tr>
+              <tr><td>Claude MEMORY.md</td><td>Claude only</td><td>No</td><td>N/A</td><td>No</td><td>Yes</td></tr>
+              <tr><td>Cursor Rules</td><td>Cursor only</td><td>No</td><td>N/A</td><td>No</td><td>Yes</td></tr>
+              <tr class="highlight-row"><td>anyllm</td><td>End-user devs</td><td>Core goal</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="format">
+      <div class="container snapshot-layout">
+        <div>
+          <p class="section-label">The .anyllm Format</p>
+          <h2>A format designed to become boring infrastructure.</h2>
+          <p class="lead">Versioned markdown keeps the snapshot inspectable, diff-friendly, and easy for other tools to adopt.</p>
+          <ul class="plain-list">
+            <li><strong>Versioned</strong> so the format can evolve without breaking old snapshots.</li>
+            <li><strong>Self-contained</strong> so one file carries enough state to resume the task.</li>
+            <li><strong>Confidence-aware</strong> so uncertain claims are visible at handoff time.</li>
+            <li><strong>Hand-editable</strong> because plain markdown is still the right default.</li>
+          </ul>
+        </div>
+        <div class="snapshot-code">
+          <div class="code-title">.anyllm/current.md</div>
+          <pre>---
+anyllm_version: 0.1
+project: multiagent
+budget_tokens: 2000
+---
+
+# Task
+Build a multi-agent orchestration layer.
+
+# Status
+Core agent loop done.
+Tool router done.
+State persistence in progress.
+
+# Decisions
+- Use SQLite for state. conf: high
+- Event sourcing over CRUD. conf: medium
+
+# Tried and failed
+- Redis for state. Overkill. Do not redo.
+
+# Next step
+Implement persistence in store.py.</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-section" id="get-started">
+      <div class="container">
+        <div class="cta-block">
+          <img src="logo.png" alt="" class="cta-logo">
+          <h2>Stop re-explaining. Start continuing.</h2>
+          <p>Install anyllm, pack the current task state, and give the next model the briefing it needs.</p>
+          <div class="hero-actions">
+            <a href="https://github.com" class="btn-primary" target="_blank" rel="noreferrer">Get started on GitHub</a>
+            <a href="#how-it-works" class="btn-secondary">Read the flow</a>
+          </div>
+          <button class="install-command" id="install-block" onclick="copyInstall()" type="button">
+            <span>$</span>
+            <code>pip install anyllm</code>
+            <small>click to copy</small>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="#hero" class="brand small">
+        <img src="logo.png" alt="" class="brand-mark">
+        <span>anyllm</span>
+      </a>
+      <p>v0.1.0 - built for portable session handoff.</p>
+      <ul class="footer-links">
+        <li><a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a></li>
+        <li><a href="#how-it-works">Docs</a></li>
+        <li><a href="#format">Format Spec</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (event) => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        navLinks.classList.remove('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    mobileMenuBtn.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      mobileMenuBtn.setAttribute('aria-expanded', String(open));
+      mobileMenuBtn.textContent = open ? 'Close' : 'Menu';
+    });
+
+    function copyInstall() {
+      const block = document.getElementById('install-block');
+      const hint = block.querySelector('small');
+      navigator.clipboard.writeText('pip install anyllm').then(() => {
+        hint.textContent = 'copied';
+        window.setTimeout(() => {
+          hint.textContent = 'click to copy';
+        }, 1600);
+      });
+    }
+  </script>
+</body>
+</html>
