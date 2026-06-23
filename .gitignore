@@ -10,3 +10,4 @@ dist/
 .anyllm/current.md
 .anyllm/index.json
 .claude
+.anyllm

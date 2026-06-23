@@ -1,0 +1,8 @@
+{
+  "exists": true,
+  "confidence": "INFERRED",
+  "node_type": "class",
+  "name": "CacheManager",
+  "file": "src/cache.py",
+  "line": 15
+}
