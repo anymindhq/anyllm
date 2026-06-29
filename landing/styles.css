@@ -579,6 +579,102 @@ tr:last-child td {
   font-size: 0.76rem;
 }
 
+.integrations-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.integration-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(12, 12, 12, 0.78);
+  padding: 20px;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.integration-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+}
+
+.integration-card.highlight {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.integration-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.int-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--white);
+}
+
+.int-badge {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--line-strong);
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+.int-badge.zero {
+  border-color: rgba(120, 220, 120, 0.3);
+  color: rgba(120, 220, 120, 0.85);
+}
+
+.integration-card code {
+  display: inline-block;
+  color: var(--white);
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.integration-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.integration-note {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 18px 22px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.integration-note strong {
+  color: var(--white);
+}
+
+.cmd-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cmd-pills code {
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
 .footer {
   position: relative;
   padding: 34px 0;
@@ -640,7 +736,8 @@ tr:last-child td {
 
   .card-grid.four,
   .card-grid.three,
-  .steps {
+  .steps,
+  .integrations-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -669,7 +766,8 @@ tr:last-child td {
 
   .card-grid.four,
   .card-grid.three,
-  .steps {
+  .steps,
+  .integrations-grid {
     grid-template-columns: 1fr;
   }
 

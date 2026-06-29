@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>anyllm - Git for LLM Context</title>
-  <meta name="description" content="Snapshot a dying LLM session, brief the next LLM, and keep moving across tools without re-explaining the work.">
-  <meta name="keywords" content="anyllm, LLM context, AI session handoff, developer tools, CLI, Claude, ChatGPT, Cursor">
+  <title>anyllm — Git for LLM Context</title>
+  <meta name="description" content="Snapshot a dying AI session, brief the next model in 30 seconds. Works as a slash command inside Claude Code, Codex, Cursor, Kiro, OpenCode, and more.">
+  <meta name="keywords" content="anyllm, LLM context, AI session handoff, Claude Code, Codex, Cursor, Kiro, OpenCode, developer tools, CLI">
   <meta name="author" content="anyllm">
   <link rel="icon" href="logo.png">
   <link rel="stylesheet" href="styles.css">
@@ -20,8 +20,8 @@
       <ul class="nav-links">
         <li><a href="#problem">Problem</a></li>
         <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#integrations">Integrations</a></li>
         <li><a href="#features">Features</a></li>
-        <li><a href="#comparison">Compare</a></li>
         <li><a href="#format">Format</a></li>
       </ul>
       <a href="https://github.com/anymindhq/anyllm" class="nav-cta" target="_blank" rel="noreferrer">Star on GitHub</a>
@@ -30,17 +30,19 @@
   </nav>
 
   <main>
+    <!-- HERO -->
     <section class="hero" id="hero">
       <div class="container hero-layout">
         <div class="hero-copy">
-          <div class="hero-kicker">Open source / Python CLI / local-first</div>
+          <div class="hero-kicker">Open source · Python CLI · local-first</div>
           <h1>Git for LLM context.</h1>
           <p class="hero-subtitle">
-            Your LLM session dies. Run <strong>anyllm pack</strong>, prime the next tool, paste once, and continue without re-explaining the project.
+            Your AI session dies. Run <strong>anyllm pack</strong>, prime the next tool, paste once — and continue without re-explaining the project.
+            Or just type <strong>/anyllm-pack</strong> without leaving your coding agent.
           </p>
           <div class="hero-actions">
             <a href="#how-it-works" class="btn-primary">See the flow</a>
-            <a href="https://github.com" class="btn-secondary" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://github.com/anymindhq/anyllm" class="btn-secondary" target="_blank" rel="noreferrer">GitHub</a>
           </div>
         </div>
 
@@ -54,23 +56,29 @@
               <span>anyllm</span>
             </div>
             <div class="terminal-body">
-              <p><span>$</span> anyllm pack</p>
-              <p class="muted">ingested session c12eefd0 - 58 turns</p>
-              <p class="muted">distilled to .anyllm/current.md - high confidence</p>
-              <p><span>$</span> anyllm prime --target chatgpt --copy</p>
-              <p class="muted">briefing copied - 1,847 tokens</p>
+              <p><span>$</span> pip install anyllm</p>
+              <p><span>$</span> anyllm install</p>
+              <p class="muted">✓ Claude Code   ✓ Codex   ✓ Kiro</p>
+              <p class="muted">✓ OpenCode   ✓ Kilocode   ✓ Cursor</p>
+              <p>&nbsp;</p>
+              <p class="muted"># now inside Claude Code:</p>
+              <p><span>&gt;</span> /anyllm-pack</p>
+              <p class="muted">packed → .anyllm/current.md (58 turns)</p>
+              <p><span>&gt;</span> /anyllm-prime</p>
+              <p class="muted">briefing copied — paste into any model</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- PROBLEM -->
     <section class="section problem-section" id="problem">
       <div class="container">
         <div class="section-intro">
           <p class="section-label">The Problem</p>
           <h2>The 10-minute tax you pay every time.</h2>
-          <p>You're deep in a coding session with an LLM. Then one of these happens, and the next tool needs the whole project explained again.</p>
+          <p>You build up context across dozens of AI turns. Then one of these happens — and the next tool needs the whole project explained again.</p>
         </div>
         <div class="card-grid four">
           <article class="card">
@@ -85,103 +93,190 @@
           </article>
           <article class="card">
             <span class="card-index">03</span>
-            <h3>Provider Outage</h3>
-            <p>The service goes down. Re-briefing a fallback model from scratch breaks your momentum.</p>
+            <h3>Tool Switch</h3>
+            <p>You want Codex's opinion on what Claude built. First it needs every decision and failed attempt explained.</p>
           </article>
           <article class="card">
             <span class="card-index">04</span>
-            <h3>Second Opinion</h3>
-            <p>You want another model to review the work, but first it needs the exact task state.</p>
+            <h3>New Session Tomorrow</h3>
+            <p>You pick up work the next day. Yesterday's AI session is gone. You're re-explaining the architecture to yourself through a model.</p>
           </article>
         </div>
       </div>
     </section>
 
+    <!-- HOW IT WORKS -->
     <section class="section" id="how-it-works">
       <div class="container">
         <div class="section-intro">
           <p class="section-label">How It Works</p>
-          <h2>Three commands. Thirty seconds.</h2>
-          <p>Pack your current session, prime the target model, then paste a compact briefing with decisions, failed paths, and next steps.</p>
+          <h2>One install. Slash commands everywhere.</h2>
+          <p>Install once, and <code>/anyllm-pack</code> works inside every AI coding tool you use — without leaving your session.</p>
         </div>
         <div class="steps">
           <article class="step">
             <span>1</span>
-            <h3>Pack</h3>
-            <code>anyllm pack</code>
-            <p>Reads your last LLM session and distills it into a focused snapshot with confidence ratings.</p>
+            <h3>Install</h3>
+            <code>anyllm install</code>
+            <p>Detects which AI coding CLIs you have installed and wires up slash commands in all of them at once.</p>
           </article>
           <article class="step">
             <span>2</span>
-            <h3>Prime</h3>
-            <code>anyllm prime --target chatgpt</code>
-            <p>Wraps the snapshot in target-specific framing, anti-repetition guards, and verification notes.</p>
+            <h3>Pack</h3>
+            <code>/anyllm-pack</code>
+            <p>Distills your session into a structured snapshot with decisions, failed paths, and what's next. Merges into rolling project memory.</p>
           </article>
           <article class="step">
             <span>3</span>
-            <h3>Paste</h3>
-            <code>--copy</code>
-            <p>The next LLM knows what is done, what failed, what matters, and what to do next.</p>
+            <h3>Prime</h3>
+            <code>/anyllm-prime</code>
+            <p>Copies a briefing to the clipboard. Paste it into any model — ChatGPT, Claude, Gemini — and continue without re-explaining.</p>
           </article>
         </div>
         <div class="pipeline">
           <span>Ingestor</span>
           <span>Distiller</span>
-          <span>Storage</span>
+          <span>Merger</span>
           <span>Composer</span>
           <span>Adapter</span>
         </div>
       </div>
     </section>
 
+    <!-- INTEGRATIONS -->
+    <section class="section" id="integrations">
+      <div class="container">
+        <div class="section-intro">
+          <p class="section-label">Integrations</p>
+          <h2>Works inside 7 AI coding tools.</h2>
+          <p><code>anyllm install</code> auto-detects what you have and installs slash commands in each. No manual config per tool.</p>
+        </div>
+
+        <div class="integrations-grid">
+          <div class="integration-card highlight">
+            <div class="integration-head">
+              <span class="int-name">Claude Code</span>
+              <span class="int-badge zero">zero tokens</span>
+            </div>
+            <code>/anyllm-pack</code>
+            <p>Slash commands run directly in the shell — no AI call, no tokens consumed. The fastest integration.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">Codex</span>
+              <span class="int-badge">AI-triggered</span>
+            </div>
+            <code>$anyllm-pack</code>
+            <p>Uses Codex's <code>$command</code> prefix. Skills are installed globally in <code>~/.codex/prompts/</code>.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">Kiro</span>
+              <span class="int-badge">steering</span>
+            </div>
+            <code>/anyllm-pack</code>
+            <p>Installed as steering documents in <code>~/.kiro/steering/</code>. Kiro reads them as persistent agent instructions.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">Kilocode</span>
+              <span class="int-badge zero">zero tokens</span>
+            </div>
+            <code>/anyllm-pack</code>
+            <p>Claude Code-compatible format. Commands run directly in the shell — no tokens used.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">OpenCode</span>
+              <span class="int-badge">AI-triggered</span>
+            </div>
+            <code>/anyllm-pack</code>
+            <p>Installed in <code>~/.config/opencode/commands/</code> or project-local <code>.opencode/commands/</code>.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">Cursor</span>
+              <span class="int-badge">skill</span>
+            </div>
+            <code>/anyllm-pack</code>
+            <p>Installed as a skill directory in <code>~/.cursor/skills-cursor/</code>.</p>
+          </div>
+          <div class="integration-card">
+            <div class="integration-head">
+              <span class="int-name">Antigravity / Agy</span>
+              <span class="int-badge">skill</span>
+            </div>
+            <code>anyllm-pack</code>
+            <p>Skills are installed in <code>~/.gemini/config/skills/</code>. Type the name as a plain message — no slash prefix.</p>
+          </div>
+        </div>
+
+        <div class="integration-note">
+          <strong>All 8 commands</strong> are installed in each CLI:
+          <span class="cmd-pills">
+            <code>/anyllm-init</code>
+            <code>/anyllm-pack</code>
+            <code>/anyllm-repack</code>
+            <code>/anyllm-prime</code>
+            <code>/anyllm-push</code>
+            <code>/anyllm-status</code>
+            <code>/anyllm-log</code>
+            <code>/anyllm-diff</code>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
     <section class="section" id="features">
       <div class="container">
         <div class="section-intro">
           <p class="section-label">Features</p>
-          <h2>Built for mid-task handoff.</h2>
-          <p>Every feature exists to make a new model resume work accurately, without pretending long-term memory is magic.</p>
+          <h2>Built for multi-session, multi-tool work.</h2>
+          <p>Every feature exists to make a new AI tool resume work accurately — without pretending long-term memory is magic.</p>
         </div>
         <div class="card-grid three">
           <article class="card">
             <span class="card-index">A</span>
-            <h3>Cross-Provider Portability</h3>
-            <p>Move context between Claude, ChatGPT, Cursor, and future LLM tools without ecosystem lock-in.</p>
+            <h3>Rolling Project Memory</h3>
+            <p>Every <code>pack</code> merges into <code>current.md</code> — not overwrites it. Decisions from three sessions ago survive even if today's session never mentioned them.</p>
           </article>
           <article class="card">
             <span class="card-index">B</span>
-            <h3>Confidence-Aware Briefings</h3>
-            <p>Each section is rated high, medium, or low so the receiving model knows what to verify.</p>
+            <h3>Confidence-Aware Decisions</h3>
+            <p>Each decision is classified CONFIRMED, STALE, or ORPHANED across sessions. The receiving model knows exactly what to trust and what to verify.</p>
           </article>
           <article class="card">
             <span class="card-index">C</span>
-            <h3>Local-First and Private</h3>
-            <p>No cloud, no database, no telemetry. Transcripts and snapshots stay on disk as plain files.</p>
+            <h3>Cross-Tool Portability</h3>
+            <p>Move context from Claude Code to Codex to ChatGPT to Gemini — same briefing, same project memory, no ecosystem lock-in.</p>
           </article>
           <article class="card">
             <span class="card-index">D</span>
-            <h3>Hand-Editable Snapshots</h3>
-            <p>Snapshots are markdown. Open them, correct them, commit them, or share them like any other project file.</p>
+            <h3>Delta Repacking</h3>
+            <p><code>/anyllm-repack</code> ingests only turns since the last pack. Use it mid-session to update context without reprocessing the full history.</p>
           </article>
           <article class="card">
             <span class="card-index">E</span>
-            <h3>Anti-Repetition Guards</h3>
-            <p>The briefing explicitly says what not to restart, re-implement, or retry.</p>
+            <h3>Failed Approaches — Forever</h3>
+            <p>Failed paths accumulate across all sessions. Every future model knows what was tried and failed — so it doesn't try again.</p>
           </article>
           <article class="card">
             <span class="card-index">F</span>
-            <h3>Extensible Pipeline</h3>
-            <p>Add new sources or targets with a small adapter while keeping the core snapshot format stable.</p>
+            <h3>Local-First and Private</h3>
+            <p>No cloud, no database, no telemetry. Transcripts and snapshots are plain files on disk. Commit <code>.anyllm/</code> to your repo.</p>
           </article>
         </div>
       </div>
     </section>
 
+    <!-- COMPARISON -->
     <section class="section comparison-section" id="comparison">
       <div class="container">
         <div class="section-intro centered">
           <p class="section-label">Comparison</p>
           <h2>Not a memory SDK. A handoff tool.</h2>
-          <p>The market is full of memory systems for app builders. anyllm is for developers moving an active task across models.</p>
+          <p>The market is full of memory systems for app developers. anyllm is for developers actively moving a task between AI coding tools.</p>
         </div>
         <div class="table-wrap">
           <table>
@@ -189,76 +284,81 @@
               <tr>
                 <th>Tool</th>
                 <th>Audience</th>
-                <th>Cross-provider</th>
+                <th>Cross-tool</th>
+                <th>Slash commands</th>
+                <th>Rolling memory</th>
                 <th>Open source</th>
-                <th>Confidence-aware</th>
-                <th>Lightweight</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>mem0</td><td>App developers</td><td>N/A</td><td>Yes</td><td>No</td><td>Medium</td></tr>
-              <tr><td>Letta / MemGPT</td><td>App developers</td><td>N/A</td><td>Yes</td><td>No</td><td>Heavy</td></tr>
-              <tr><td>Zep</td><td>App developers</td><td>N/A</td><td>Partial</td><td>No</td><td>Heavy</td></tr>
-              <tr><td>Pieces</td><td>End-user devs</td><td>Some</td><td>No</td><td>No</td><td>Heavy</td></tr>
-              <tr><td>Claude MEMORY.md</td><td>Claude only</td><td>No</td><td>N/A</td><td>No</td><td>Yes</td></tr>
-              <tr><td>Cursor Rules</td><td>Cursor only</td><td>No</td><td>N/A</td><td>No</td><td>Yes</td></tr>
-              <tr class="highlight-row"><td>anyllm</td><td>End-user devs</td><td>Core goal</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>mem0</td><td>App developers</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>Letta / MemGPT</td><td>App developers</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>Pieces</td><td>End-user devs</td><td>Some</td><td>No</td><td>No</td><td>No</td></tr>
+              <tr><td>Claude MEMORY.md</td><td>Claude only</td><td>No</td><td>No</td><td>Manual</td><td>N/A</td></tr>
+              <tr><td>Cursor Rules</td><td>Cursor only</td><td>No</td><td>No</td><td>Manual</td><td>N/A</td></tr>
+              <tr class="highlight-row"><td>anyllm</td><td>End-user devs</td><td>7 tools</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
+    <!-- FORMAT -->
     <section class="section" id="format">
       <div class="container snapshot-layout">
         <div>
           <p class="section-label">The .anyllm Format</p>
           <h2>A format designed to become boring infrastructure.</h2>
-          <p class="lead">Versioned markdown keeps the snapshot inspectable, diff-friendly, and easy for other tools to adopt.</p>
+          <p class="lead">Versioned markdown keeps context inspectable, diff-friendly, and easy for other tools to build on.</p>
           <ul class="plain-list">
             <li><strong>Versioned</strong> so the format can evolve without breaking old snapshots.</li>
-            <li><strong>Self-contained</strong> so one file carries enough state to resume the task.</li>
-            <li><strong>Confidence-aware</strong> so uncertain claims are visible at handoff time.</li>
+            <li><strong>Merged</strong> so decisions accumulate across sessions — never silently dropped.</li>
+            <li><strong>Confidence-aware</strong> so uncertain claims are surfaced at handoff time.</li>
             <li><strong>Hand-editable</strong> because plain markdown is still the right default.</li>
+            <li><strong>Committable</strong> — <code>.anyllm/</code> belongs in your repo alongside the code.</li>
           </ul>
         </div>
         <div class="snapshot-code">
           <div class="code-title">.anyllm/current.md</div>
           <pre>---
 anyllm_version: 0.1
-project: multiagent
-budget_tokens: 2000
+project: myapp
+merged_from: [session-a, session-b]
+confidence_report:
+  confirmed: 4
+  stale: 1
 ---
 
-# Task
+## Task
 Build a multi-agent orchestration layer.
 
-# Status
-Core agent loop done.
-Tool router done.
-State persistence in progress.
+## Decisions
+- [CONFIRMED] Use SQLite for state — auth/store.py
+- [CONFIRMED] Event sourcing over CRUD — core/events.py
+- [NEW] Retry budget capped per-tool, not global
 
-# Decisions
-- Use SQLite for state. conf: high
-- Event sourcing over CRUD. conf: medium
-
-# Tried and failed
+## Failed Approaches
 - Redis for state. Overkill. Do not redo.
+- Polling loop for tool results. Use callbacks.
 
-# Next step
-Implement persistence in store.py.</pre>
+## Stale / Needs Verification
+- [STALE] Tool registry auto-discovers plugins
+
+## Next Step
+Implement persistence layer in store.py.</pre>
         </div>
       </div>
     </section>
 
+    <!-- CTA -->
     <section class="section cta-section" id="get-started">
       <div class="container">
         <div class="cta-block">
           <img src="logo.png" alt="" class="cta-logo">
           <h2>Stop re-explaining. Start continuing.</h2>
-          <p>Install anyllm, pack the current task state, and give the next model the briefing it needs.</p>
+          <p>Install anyllm, run <code>anyllm install</code>, and <code>/anyllm-pack</code> works inside every AI coding tool you use.</p>
           <div class="hero-actions">
-            <a href="https://github.com" class="btn-primary" target="_blank" rel="noreferrer">Get started on GitHub</a>
+            <a href="https://github.com/anymindhq/anyllm" class="btn-primary" target="_blank" rel="noreferrer">Get started on GitHub</a>
             <a href="#how-it-works" class="btn-secondary">Read the flow</a>
           </div>
           <button class="install-command" id="install-block" onclick="copyInstall()" type="button">
@@ -277,10 +377,10 @@ Implement persistence in store.py.</pre>
         <img src="logo.png" alt="" class="brand-mark">
         <span>anyllm</span>
       </a>
-      <p>v0.1.0 - built for portable session handoff.</p>
+      <p>v0.1.0 · Git for LLM context.</p>
       <ul class="footer-links">
-        <li><a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a></li>
-        <li><a href="#how-it-works">Docs</a></li>
+        <li><a href="https://github.com/anymindhq/anyllm" target="_blank" rel="noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/anymindhq/anyllm#readme" target="_blank" rel="noreferrer">Docs</a></li>
         <li><a href="#format">Format Spec</a></li>
       </ul>
     </div>
@@ -317,9 +417,7 @@ Implement persistence in store.py.</pre>
       const hint = block.querySelector('small');
       navigator.clipboard.writeText('pip install anyllm').then(() => {
         hint.textContent = 'copied';
-        window.setTimeout(() => {
-          hint.textContent = 'click to copy';
-        }, 1600);
+        window.setTimeout(() => { hint.textContent = 'click to copy'; }, 1600);
       });
     }
   </script>
