@@ -1,149 +1,202 @@
-# anyllm — Portable LLM Session Context
+# anyllm — Git for LLM Context
 
-> *Git for LLM context.* Snapshot a dying session, brief the next model in 30 seconds, anywhere.
+> *Snapshot a dying AI coding session. Brief the next model in 30 seconds. Keep moving.*
 
-<img width="774" height="277" alt="image" src="https://github.com/user-attachments/assets/9fdfee65-a851-4605-9425-49071c8b5dd9" />
+<img width="774" height="277" alt="anyllm banner" src="https://github.com/user-attachments/assets/9fdfee65-a851-4605-9425-49071c8b5dd9" />
 
+You're deep in a Claude Code session. Context window fills. Or you want a second opinion in Codex. Or you switch machines. Either way — the next tool needs the whole project explained again.
 
-You researched the architecture in ChatGPT. Now you need Claude to write the code. Explaining it all over again wastes ten minutes — and even then, the second model misses half the decisions you already made.
+**anyllm** snapshots that session into a compact briefing and injects it anywhere: paste it, push it to a browser tab, or let a slash command do it automatically in any of 7 supported AI coding CLIs.
 
-**anyllm** solves this. It distills a long LLM session into a compact, instructional briefing you can paste into any other model — ChatGPT, Claude, Cursor, a fresh tab — and pick up exactly where you left off, without re-litigating finished work.
-
-And it doesn't just snapshot the *latest* session. Every `pack` **merges** the new session into a rolling project memory, so a decision made three sessions ago survives even if today's session never mentioned it. When [graphify](#graphify-integration-optional) is installed, anyllm verifies those decisions against your actual source code — not just against what the model claimed.
+And it doesn't just snapshot the *latest* session. Every `pack` **merges** the new snapshot into a rolling project memory — decisions made three sessions ago survive even if today's session never mentioned them.
 
 ---
 
 ## Install
 
-Requires Python 3.10+.
-
 ```bash
-# macOS / Linux
-python3 -m venv .venv
-.venv/bin/pip install -e .
-
-# Windows (PowerShell)
-python -m venv venv
-venv\Scripts\pip install -e .
-
-# optional; without it, distillation runs in offline mode
-export ANTHROPIC_API_KEY=sk-ant-...
+pip install anyllm
 ```
 
-## Quickstart
+Requires Python 3.10+. Set `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for distillation (required). Add to your shell profile.
+
+---
+
+## First-Run Setup
 
 ```bash
 cd your-project
-anyllm init
-anyllm pack                              # snapshot the most recent Claude Code session
-anyllm prime --target chatgpt --copy     # briefing on the clipboard — paste and keep going
+anyllm install
 ```
+
+This does three things in one command:
+1. Creates `.anyllm/` in the current project
+2. Detects which AI coding CLIs you have installed
+3. Installs `/anyllm-pack` (and 7 other commands) into all of them
+
+After that, you never need to leave your AI coding session:
+
+```
+/anyllm-pack       ← works in Claude Code, OpenCode, Kiro, Kilocode
+$anyllm-pack       ← works in Codex
+anyllm-pack        ← type as a message in Antigravity/Agy
+```
+
+---
 
 ## Commands
 
 | Command | What it does |
 |---|---|
-| `anyllm init` | Create a `.anyllm/` directory in the current project. |
-| `anyllm pack` | Ingest the most recent LLM session, distill it, **merge** into `current.md`. |
-| `anyllm prime --target <model> [--copy] [--write PATH]` | Render a copy-pasteable briefing for the target model, optionally enriched with codebase-graph structure. |
-| `anyllm status` | Print task, decision counts, graph freshness, and merge state. |
-| `anyllm log` | Table of every session packed, with per-session decision deltas. |
-| `anyllm diff <session-id>` | Show the snapshot and merge summary from a past session. |
+| `anyllm init` | Create `.anyllm/` in the current project |
+| `anyllm pack` | Snapshot the most recent session, merge into `current.md` |
+| `anyllm repack` | Ingest turns missed since the last pack (delta update, no duplicate work) |
+| `anyllm prime [--target MODEL] [--copy] [--write PATH]` | Render a briefing for the next model |
+| `anyllm push` | Silently inject the briefing into a browser tab and press Send |
+| `anyllm status` | Show task, decisions, and repository context state |
+| `anyllm log` | Table of every packed session with per-session decision deltas |
+| `anyllm diff SESSION_ID` | Show the raw snapshot from a past session |
+| `anyllm install` | First-run setup: init + integrate all detected CLIs |
+| `anyllm integrate [NAME]` | Install slash commands into one or all detected CLIs |
+| `anyllm integrations` | Show which CLIs are detected and installed |
+| `anyllm uninstall NAME` | Remove slash commands from a CLI |
 
-MVP ships with one ingestor (`claude-code`) and one adapter (`chatgpt`).
+---
 
-## How it works
+## CLI Integrations
 
-Six stages, each with one job:
+`anyllm install` (or `anyllm integrate --all`) installs commands into every AI coding CLI you have on the machine. Run `anyllm integrations` to see what's detected and installed.
+
+| CLI | Detection | Invocation | Slash commands |
+|---|---|---|---|
+| **Claude Code** | `~/.claude/` | `/anyllm-pack` | Zero-token (no AI call) |
+| **Antigravity / Agy** | `~/.gemini/` or `agy` binary | type `anyllm-pack` as a message | AI-triggered skill |
+| **OpenCode** | `opencode` binary | `/anyllm-pack` | AI-triggered |
+| **Codex** | `~/.codex/` | `$anyllm-pack` | AI-triggered |
+| **Kiro** | `~/.kiro/` | `/anyllm-pack` | Steering doc |
+| **Kilocode** | `~/.kilocode/` | `/anyllm-pack` | Zero-token |
+| **Cursor** | `~/.cursor/` | `/anyllm-pack` | Skill directory |
+
+Every integration installs the same 8 commands:
 
 ```
-Ingestor → Distiller → [Graph Update] → Merger → Composer → Adapter
+/anyllm-init     /anyllm-pack     /anyllm-repack   /anyllm-prime
+/anyllm-push     /anyllm-status   /anyllm-log      /anyllm-diff
 ```
 
-**Ingestor** reads `~/.claude/projects/*.jsonl` into a normalized transcript.
+### Claude Code — Zero Token
 
-**Distiller** (Claude Sonnet) compresses it into a structured snapshot — what was decided, what was built, what's next — with per-section confidence scores so you know what to double-check.
+Claude Code slash commands with `disable-model-invocation: true` run directly in the shell with no AI tokens consumed. `anyllm pack` inside Claude Code costs exactly zero tokens.
 
-**Graph Update** (optional) runs `graphify extract --update` to refresh the codebase knowledge graph before merging — only re-extracting files that changed.
+### Antigravity / Agy
 
-**Merger** combines the new snapshot with the existing `current.md` instead of overwriting it. Decisions accumulate across sessions — they're never silently dropped — and graph confidence decides which ones survive.
+Antigravity (Google's `agy` CLI) does not support custom slash commands — only built-in `/` commands like `/skills`, `/settings`. Instead, type the command name as a **plain message**:
 
-**Storage** lives in `.anyllm/` as plain markdown and JSON. Hand-editable, diff-able, committable.
+```
+anyllm-pack
+```
+
+The installed skill activates automatically and runs `anyllm pack`.
+
+### Manual Integration
+
+Install into a specific CLI without the auto-detect:
+
+```bash
+anyllm integrate claude      # Claude Code
+anyllm integrate gemini      # Antigravity / Agy
+anyllm integrate opencode    # OpenCode
+anyllm integrate codex       # Codex
+anyllm integrate kiro        # Kiro
+anyllm integrate kilo        # Kilocode
+anyllm integrate cursor      # Cursor
+
+anyllm integrate --project   # install to .agents/skills/ instead of user config
+```
+
+---
+
+## How It Works
+
+```
+Ingestor → Distiller → Merger → Composer → Adapter
+```
+
+**Ingestor** reads `~/.claude/projects/*.jsonl` (or similar) into a normalized turn-by-turn transcript.
+
+**Distiller** compresses it into a structured snapshot — task, decisions, code map, failed approaches, next step — using your configured LLM.
+
+**Merger** combines the new snapshot with the existing `current.md` instead of overwriting it. Decisions accumulate across sessions. Nothing is silently dropped. Repository analysis (when available) verifies decisions against your actual source code.
 
 **Composer** wraps the snapshot in role framing and anti-repetition guards so the receiving model doesn't re-explore closed questions.
 
-**Adapter** renders the briefing in the idiom of the target model — the same snapshot reads differently to ChatGPT vs. Cursor vs. a fresh Claude session.
+**Adapter** renders the briefing in the format expected by the target (`chatgpt`, `claude`, `cursor`, ...).
+
+### `repack` — Zero-Duplication Delta Update
+
+`anyllm repack` reads only the turns that happened *after* the last pack, distills just those, and merges the delta in. Use it mid-session without re-processing the entire history.
 
 ---
 
 ## Confidence-Aware Snapshot Merging
 
-Previously, `anyllm pack` overwrote `current.md` with the latest snapshot. Decisions made three sessions ago and not mentioned in the latest session were silently lost. Now, every `pack` **merges** the new snapshot into the existing one.
+Every `pack` classifies every known decision:
 
-Decisions are matched across sessions by a normalized hash plus character-bigram similarity, so the same decision worded two different ways — *"JWT validation moved into `auth.py`"* vs. *"auth is handled by the `auth` module"* — is recognized as one decision, not two.
+| State | Meaning |
+|---|---|
+| **CONFIRMED** | Re-stated this session, or verified against the codebase |
+| **ADDED** | New this session |
+| **UPDATED** | Significantly reworded — old wording archived in **Superseded Decisions** |
+| **STALE** | Absent from this session, confidence uncertain — surfaced in **Stale / Needs Verification** |
+| **ORPHANED** | Code anchor gone and absent for `stale_threshold` consecutive sessions |
 
-### Decision State Machine
-
-Each decision from a previous `current.md` is classified:
-
-- **CONFIRMED** — re-stated in the latest session, or verified by the codebase graph (`EXTRACTED`)
-- **ADDED** — new this session
-- **UPDATED** — re-stated but reworded significantly; the prior wording is archived under **Superseded Decisions** so the next model knows what changed
-- **STALE** — absent from the latest session and graph confidence is uncertain (`INFERRED` / `AMBIGUOUS`); surfaced under **Stale / Needs Verification**
-- **ORPHANED** — code anchor gone (`MISSING`) and absent for `stale_threshold` consecutive sessions
-
-A decision verified as `EXTRACTED` by the graph stays **CONFIRMED even when the latest session never mentioned it** — the code is the source of truth.
+Decisions are matched across sessions by normalized hash + character-bigram similarity, so the same decision worded two different ways is recognized as one, not two.
 
 ### Sections That Never Get Dropped
 
-- **Failed Approaches** — union of all sessions. If something failed once, the next model knows forever.
+- **Failed Approaches** — union of all sessions. If something failed once, every future model knows.
 - **Open Questions** — carried forward until a session explicitly resolves one.
 
 ### Session Provenance
 
-Every decision tracks which session introduced it and which sessions re-confirmed it. `current.md` includes a `merged_from` list, a `confidence_report` summary, and a `Session Provenance` table so anyone can audit exactly how the project's knowledge evolved. State persists in the frontmatter between packs (`decision_provenance`), including each decision's consecutive-absence count.
+Every decision tracks which session introduced it and which sessions re-confirmed it. `current.md` includes a `merged_from` list, a `confidence_report` summary, and a `Session Provenance` table. State persists in frontmatter between packs (`decision_provenance`).
 
 ### Graceful Degradation
 
-Merging works without any extra tools. When graphify isn't installed, absent decisions are conservatively marked STALE (not orphaned). If a merge ever fails, `pack` falls back to a plain write rather than losing the snapshot. Set `merge.enabled: false` in config to revert to the old overwrite behavior.
+Merging works without any extra tools. If a merge fails, `pack` falls back to a plain write rather than losing the snapshot. Disable merging with `merge.enabled: false`.
 
 ---
 
-## graphify Integration (Optional)
+## Config
 
-[graphify](https://github.com/anymindhq/graphify) builds a knowledge graph from your codebase via AST extraction. anyllm uses it to verify decisions against the actual code — not just what the LLM said.
-
-```bash
-# Install graphify separately
-uv tool install graphifyy
-
-# Build the initial graph (one-time)
-graphify extract .
-
-# anyllm auto-updates the graph on every pack
-anyllm pack   # calls graphify extract --update internally
-```
-
-anyllm makes two types of graphify query:
-
-- **Node confidence** — does this code anchor still exist, and how confident? (`EXTRACTED` / `INFERRED` / `AMBIGUOUS` / `MISSING`)
-- **Incremental update** — re-extract only changed files (fast, seconds not minutes)
-
-All calls run through a subprocess with a configurable timeout; if graphify is slow or absent, the merge proceeds without graph verification rather than blocking `pack`. graphify never writes to `current.md` or decides what decisions mean. It only answers: *"does this code still exist?"* The merge engine owns all logic.
-
-### Graph-Enriched Briefings
-
-When a graph is present, `anyllm prime` injects a **Codebase Structure** section into the briefing — modules, key functions and classes, dependency edges, and per-anchor verification for each decision. The receiving model gets the project's *actual* architecture from AST analysis, not just prose describing it.
-
-### Config
+`.anyllm/config.yaml` is created by `anyllm init` with defaults:
 
 ```yaml
+distiller:
+  model: gpt-4o-mini
+  budget_tokens: 2000
+
+targets:
+  default: chatgpt
+
+framing:
+  extra_rules: []
+  tone: direct
+
 merge:
   enabled: true
-  graphify_graph: "graphify-out/graph.json"   # relative to project root
-  graphify_timeout: 30        # seconds; subprocess timeout (0 = none)
-  stale_threshold: 3          # consecutive sessions absent before ORPHANED
-  auto_update_graph: true     # run graphify extract --update before merging
+  stale_threshold: 3      # consecutive sessions absent before ORPHANED
+
+repository_analysis:
+  enabled: true
+  timeout: 30             # seconds; subprocess timeout
+  auto_refresh: true      # analyze repo automatically on pack
+
+push:
+  browser: auto           # auto | chrome | firefox | edge
+  codex_url: https://codex.openai.com
+  send_delay_ms: 500
+  open_if_missing: true
 ```
 
 ---
@@ -152,29 +205,31 @@ merge:
 
 ```
 .anyllm/
-├── config.yaml              # model, target, framing, merge settings
-├── index.json               # session log with per-session merge deltas
-├── current.md               # rolling, merged project memory (what prime reads)
+├── config.yaml              # model, target, merge, push settings
+├── index.json               # session log with per-session decision deltas
+├── current.md               # rolling merged project memory (what prime reads)
 └── sessions/
     ├── <date>-<id>.transcript.json   # normalized raw session
     └── <date>-<id>.snapshot.md       # distilled per-session snapshot
 ```
 
-Per-session snapshots are kept forever so `log` and `diff` always work. The `.anyllm/` directory is plain text — commit it.
+All files are plain text — hand-editable, diff-able, committable. The `.anyllm/` directory belongs in your repo.
 
 ---
 
 ## Roadmap
 
-- Additional ingestors: ChatGPT export, Gemini, raw markdown transcripts
+- Additional ingestors: Codex, Gemini, OpenCode, raw markdown
 - Additional adapters: Cursor, Gemini, local Llama
-- `anyllm push` — sync context to a shared team workspace so collaborators join mid-session without a catch-up call
 - Embedding-based decision matching for better paraphrase handling
+- Team workspace sync
 
 ---
 
 ## Philosophy
 
-Every LLM session is stateless. You build up context painfully across dozens of turns, and the moment you switch models — or the context window fills — that shared understanding evaporates. `anyllm` treats context as a first-class artifact: something you build once, version, and carry forward, not something you reconstruct from memory every time.
+Every AI coding session is stateless. You build up context across dozens of turns, and the moment you switch tools — or the context window fills — that shared understanding evaporates.
+
+`anyllm` treats context as a first-class artifact: something you build once, version, and carry forward — not something you reconstruct from memory every time.
 
 The `.anyllm/` directory belongs in your repo. Commit it.
