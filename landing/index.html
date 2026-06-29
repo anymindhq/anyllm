@@ -56,7 +56,7 @@
               <span>anyllm</span>
             </div>
             <div class="terminal-body">
-              <p><span>$</span> pip install anyllm</p>
+              <p><span>$</span> pip install anyllm-ctx</p>
               <p><span>$</span> anyllm install</p>
               <p class="muted">✓ Claude Code   ✓ Codex   ✓ Kiro</p>
               <p class="muted">✓ OpenCode   ✓ Kilocode   ✓ Cursor</p>
@@ -356,14 +356,14 @@ Implement persistence layer in store.py.</pre>
         <div class="cta-block">
           <img src="logo.png" alt="" class="cta-logo">
           <h2>Stop re-explaining. Start continuing.</h2>
-          <p>Install anyllm, run <code>anyllm install</code>, and <code>/anyllm-pack</code> works inside every AI coding tool you use.</p>
+          <p>Install, run <code>anyllm install</code>, and <code>/anyllm-pack</code> works inside every AI coding tool you use.</p>
           <div class="hero-actions">
             <a href="https://github.com/anymindhq/anyllm" class="btn-primary" target="_blank" rel="noreferrer">Get started on GitHub</a>
             <a href="#how-it-works" class="btn-secondary">Read the flow</a>
           </div>
           <button class="install-command" id="install-block" onclick="copyInstall()" type="button">
             <span>$</span>
-            <code>pip install anyllm</code>
+            <code>pip install anyllm-ctx</code>
             <small>click to copy</small>
           </button>
         </div>
@@ -415,7 +415,7 @@ Implement persistence layer in store.py.</pre>
     function copyInstall() {
       const block = document.getElementById('install-block');
       const hint = block.querySelector('small');
-      navigator.clipboard.writeText('pip install anyllm').then(() => {
+      navigator.clipboard.writeText('pip install anyllm-ctx').then(() => {
         hint.textContent = 'copied';
         window.setTimeout(() => { hint.textContent = 'click to copy'; }, 1600);
       });

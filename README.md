@@ -15,7 +15,7 @@ And it doesn't just snapshot the *latest* session. Every `pack` **merges** the n
 ## Install
 
 ```bash
-pip install anyllm
+pip install anyllm-ctx
 ```
 
 Requires Python 3.10+. Set `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for distillation (required). Add to your shell profile.
